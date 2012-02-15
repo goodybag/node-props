@@ -1,7 +1,6 @@
 # props
 
-a module for node that is able to extract either JSON or YAML from the beginning
-of a string
+parse either JSON or YAML from the beginning of a string
 
 ## Installation
 
@@ -9,42 +8,58 @@ of a string
 
 ## Usage
 
-```js
-var props = require("props");
+Imagine you had these two files:
 
-// Use JSON
+text1.txt:
 
-var json =
-'{\n\
-  "title": "How to use node.js",\n\
-  "date": "2011-08-09T17:56:00",\n\
-  "tags": [ "example", "node.js" ]\n\
-}\n\
-\n\
-\n\
-Node.js is a new technology...';
+```
+{
+  "title", "How to use node.js",
+  "date", "2011-08-09T17:56:00",
+  "tags", [ "example", "node.js" ]
+}
 
-console.log(props(json));
 
-// or YAML
-
-var yaml =
-'title: How to use node.js\n\
-date: 2011-08-09T17:56:00\n\
-tags:\n\
-  - example\n\
-  - node.js\n\
-\n\
-\n\
-Node.js is a new technology...';
-
-console.log(props(yaml));
+Node.js is a new technology...
 ```
 
-This will print nearly the same object twice, since `json` and `yaml` define the
-same object:
+text2.txt:
 
-_JSON_:
+```
+title: How to use node.js
+date: 2011-08-09T17:56:00
+tags: [ example, node.js ]
+
+
+Node.js is a new technology...
+```
+
+parse.js:
+
+```js
+var props = require('props');
+var fs = require('fs');
+
+// --- text1 ---
+
+var text1 = fs.readFileSync('text1.txt', 'utf8'); // read first text file
+
+var parsedText1 = props(text1);                   // parse json
+
+console.log(parsedText1);
+
+// --- text2 ---
+
+var text2 = fs.readFileSync('text2.txt', 'utf8'); // read second text file
+
+var parsedText2 = props(text2);                   // parse YAML
+
+console.log(parsedText2);
+```
+
+The output will be:
+
+text1:
 
 ```js
 { title: 'How to use node.js',
@@ -54,7 +69,7 @@ _JSON_:
 
 ```
 
-_YAML_:
+text2:
 
 ```js
 { title: 'How to use node.js',
